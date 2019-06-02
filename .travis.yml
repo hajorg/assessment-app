@@ -13,7 +13,6 @@ services:
 before_script:
   - psql -c 'drop database if exists assessment_app_test;' -U postgres
   - psql -c 'create database assessment_app_test;' -U postgres
-  - NODE_ENV=test npx knex migrate:latest
 
 addons:
   postgresql: "9.3"
