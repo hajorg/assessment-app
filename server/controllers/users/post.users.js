@@ -1,0 +1,63 @@
+const jwt = require('jsonwebtoken');
+const bcrypt = require('bcrypt');
+const { body, validationResult } = require('express-validator/check');
+
+const knex = require('../../../db_connection');
+const table = 'users';
+
+// table.string('first_name');
+//     table.string('last_name');
+//     table.string('client');
+//     table.string('email');
+//     table.string('password');
+//     table.string('location');
+
+const handler = async (req, res) => {
+  try {
+    const { password, first_name, last_name, email, location, role } = req.body;
+    const hashedPassword = await bcrypt.hash(password, 10);
+    const users = await knex(table).insert({
+      first_name,
+      last_name,
+      password: hashedPassword,
+      role,
+      email,
+      location
+    }).returning(['id', 'first_name', 'last_name', 'email', 'role']);
+
+    if (!users.length) {
+      return res.status(400).json({ error: 'A problem occurred while creating your account. Please try again' });
+    }
+
+    const user = users[0];
+
+    const token = jwt.sign({ user }, process.env.APP_SECRET, { expiresIn: '2h' });
+
+    res.status(201).json({ ...user, token });
+  } catch (error) {
+    console.log(error); //eslint-disable-line
+    res.status(422).json({ error: 'An error occurred' });
+  }
+};
+
+const validate = (req, res, next) => {
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    return res.status(422).json({ errors: errors.array() });
+  }
+  next();
+
+};
+
+module.exports = [
+  [
+    body('first_name').exists().isLength({ min: 3 }).isString(),
+    body('last_name').exists().isLength({ min: 3 }).isString(),
+    body('email').exists().isEmail(),
+    body('password').exists().isLength({ min: 8 }),
+    body('location').exists().isString(),
+    body('role').exists().isIn(['client', 'candidate'])
+  ],
+  validate,
+  handler
+];
