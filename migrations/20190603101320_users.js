@@ -4,8 +4,10 @@ exports.up = async (knex) => {
     table.increments().primary();
     table.string('first_name');
     table.string('last_name');
-    table.string('client');
-    table.string('email');
+    table.string('role');
+    table.text('bio');
+    table.string('image_url');
+    table.string('email').unique();
     table.string('password');
     table.string('location');
   });
