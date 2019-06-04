@@ -1,6 +1,11 @@
 import React, { Component } from 'react';
+import { Switch, Route } from 'react-router-dom';
+
 import logo from './logo.svg';
 import './App.css';
+import SignUp from './pages/SignUp'
+import Login from './pages/Login'
+import JobPosting from './pages/JobPosting'
 
 class App extends Component {
   constructor(props) {
@@ -17,16 +22,27 @@ class App extends Component {
   }
 
   async fetchWelcomeMessage() {
-    const res = await fetch('/api/v1');
-    return res.json();
+    try {
+      const res = await fetch('/api/v1');
+      return res.json();
+    } catch (error) {
+      console.log(error);
+    }
   }
   render() {
     return (
       <div className='App'>
-        <header className='App-header'>
-          <img src={logo} className='App-logo' alt='logo' />
-          <div className='message'>{ this.state.apiMessage }</div>
-        </header>
+        <Switch>
+          <Route exact path='/' render={() => (
+            <header className='App-header'>
+              <img src={logo} className='App-logo' alt='logo' />
+              <div className='message'>{ this.state.apiMessage }</div>
+            </header>
+          )} />
+          <Route path='/signup' component={SignUp} />
+          <Route path='/login' component={Login} />
+          <Route path='/jobs' component={JobPosting} />
+        </Switch>
       </div>
     );
   }
