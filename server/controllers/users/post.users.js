@@ -5,16 +5,9 @@ const { body, validationResult } = require('express-validator/check');
 const knex = require('../../../db_connection');
 const table = 'users';
 
-// table.string('first_name');
-//     table.string('last_name');
-//     table.string('client');
-//     table.string('email');
-//     table.string('password');
-//     table.string('location');
-
 const handler = async (req, res) => {
   try {
-    const { password, first_name, last_name, email, location, role } = req.body;
+    const { password, first_name, last_name, email, location, role, bio } = req.body;
     const hashedPassword = await bcrypt.hash(password, 10);
     const users = await knex(table).insert({
       first_name,
@@ -22,7 +15,8 @@ const handler = async (req, res) => {
       password: hashedPassword,
       role,
       email,
-      location
+      location,
+      bio
     }).returning(['id', 'first_name', 'last_name', 'email', 'role']);
 
     if (!users.length) {
@@ -56,7 +50,8 @@ module.exports = [
     body('email').exists().isEmail(),
     body('password').exists().isLength({ min: 8 }),
     body('location').exists().isString(),
-    body('role').exists().isIn(['client', 'candidate'])
+    body('role').exists().isIn(['client', 'candidate']),
+    body('bio').isString().isEmpty(),
   ],
   validate,
   handler

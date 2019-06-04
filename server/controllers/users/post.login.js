@@ -12,7 +12,8 @@ const handler = async (req, res) => {
       .select(['id', 'first_name', 'last_name', 'email', 'role', 'password'])
       .where({ email });
 
-    const result = await bcrypt.compare(password, user.password);
+    let result = false;
+    if (user) result = await bcrypt.compare(password, user.password);
 
     if (!user || !result) return res.status(401).send({ error: 'Invalid username/password combination' });
 
