@@ -7,9 +7,9 @@ const table = 'users';
 
 const handler = async (req, res) => {
   try {
-    const { password, first_name, last_name, email, location, role, bio } = req.body;
+    const { password, first_name, last_name, email, location, role, bio, skills } = req.body;
     const hashedPassword = await bcrypt.hash(password, 10);
-    const users = await knex(table).insert({
+    const [user] = await knex(table).insert({
       first_name,
       last_name,
       password: hashedPassword,
@@ -19,11 +19,13 @@ const handler = async (req, res) => {
       bio
     }).returning(['id', 'first_name', 'last_name', 'email', 'role']);
 
-    if (!users.length) {
+    const userSkills = skills.map((skill) => ({ name: skill, candidate_id: user.id }));
+    if (userSkills.length) await knex('skills').insert(userSkills).returning('*');
+
+    if (!user) {
       return res.status(400).json({ error: 'A problem occurred while creating your account. Please try again' });
     }
 
-    const user = users[0];
 
     const token = jwt.sign({ user }, process.env.APP_SECRET, { expiresIn: '2h' });
 
@@ -52,6 +54,7 @@ module.exports = [
     body('location').exists().isString(),
     body('role').exists().isIn(['client', 'candidate']),
     body('bio').isString().isEmpty(),
+    body('skills').isArray()
   ],
   validate,
   handler
