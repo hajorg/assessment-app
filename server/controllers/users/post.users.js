@@ -1,6 +1,7 @@
-const jwt = require('jsonwebtoken');
 const bcrypt = require('bcrypt');
 const { body, validationResult } = require('express-validator/check');
+
+const Authentication = require('../../middleware/auth');
 
 const knex = require('../../../db_connection');
 const table = 'users';
@@ -26,13 +27,12 @@ const handler = async (req, res) => {
       return res.status(400).json({ error: 'A problem occurred while creating your account. Please try again' });
     }
 
-
-    const token = jwt.sign({ user }, process.env.APP_SECRET, { expiresIn: '2h' });
+    const token = Authentication.generateToken(user);
 
     res.status(201).json({ ...user, token });
   } catch (error) {
     console.log(error); //eslint-disable-line
-    res.status(422).json({ error: 'An error occurred' });
+    res.status(500).json({ error: 'An error occurred' });
   }
 };
 
