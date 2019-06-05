@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Link, Route, Switch } from 'react-router-dom';
+import { Route, Switch } from 'react-router-dom';
 
 import './App.css';
 import SignUp from './pages/SignUp';
@@ -8,6 +8,7 @@ import Logout from './pages/Logout';
 import Post from './pages/Post';
 import JobPosting from './pages/JobPosting';
 import JobApplicants from './pages/JobApplicants';
+import NavBar from './components/NavBar';
 
 class App extends Component {
   constructor(props) {
@@ -59,21 +60,7 @@ class App extends Component {
     
     return (
       <div className='App'>
-        {
-          loggedIn &&
-          <nav className='container nav justify-content-center' style={{ marginBottom: '2rem' }}>
-            <Link className='nav-link active' to='/jobs'>Jobs</Link>
-            <Link className='nav-link' to='/job/posts'>Create Job</Link>
-            <Link className='nav-link' to='/logout'>Logout</Link>
-          </nav>
-        }
-        {
-          !loggedIn &&
-          <nav className='container nav justify-content-end' style={{ marginBottom: '2rem' }}>
-            <Link className='nav-link active' to='/login'>Login</Link>
-            <Link className='nav-link' to='/signup'>Sign up</Link>
-          </nav>
-        }
+        <NavBar loggedIn={loggedIn} />
         <Switch>
           <Route exact path='/' render={() => (
             <header className='App-header'>
