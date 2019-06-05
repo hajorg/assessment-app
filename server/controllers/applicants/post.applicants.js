@@ -6,7 +6,7 @@ const table = 'job_applications';
 
 const handler = async (req, res) => {
   try {
-    const payload = jwt.verify(req.body.token, process.env.APP_SECRET);
+    const payload = jwt.verify(req.headers['x-access-token'], process.env.APP_SECRET);
     console.log(payload); //eslint-disable-line 
 
     if (payload.user.role !== 'candidate') {
@@ -69,8 +69,7 @@ const validate = (req, res, next) => {
 
 module.exports = [
   [
-    body('job_id').exists().isInt(),
-    body('token').exists().isString(),
+    body('job_id').exists().isInt()
   ],
   validate,
   handler

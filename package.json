@@ -4,6 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
+    "lint": "npx eslint server/",
     "start": "node server/index.js",
     "start:dev": "npx nodemon server/index.js",
     "test": "./node_modules/.bin/jest server/"

@@ -3,9 +3,10 @@ import { Switch, Route } from 'react-router-dom';
 
 import logo from './logo.svg';
 import './App.css';
-import SignUp from './pages/SignUp'
-import Login from './pages/Login'
-import JobPosting from './pages/JobPosting'
+import SignUp from './pages/SignUp';
+import Login from './pages/Login';
+import JobPosting from './pages/JobPosting';
+import Posts from './pages/Posts';
 
 class App extends Component {
   constructor(props) {
@@ -41,7 +42,8 @@ class App extends Component {
           )} />
           <Route path='/signup' component={SignUp} />
           <Route path='/login' component={Login} />
-          <Route path='/jobs' component={JobPosting} />
+          <Route exact path='/jobs' component={JobPosting} />
+          <Route path='/jobs/posts' component={Posts} />
         </Switch>
       </div>
     );
