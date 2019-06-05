@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import { Link, Route, Switch } from 'react-router-dom';
 
-import logo from './logo.svg';
 import './App.css';
 import SignUp from './pages/SignUp';
 import Login from './pages/Login';
@@ -60,19 +59,24 @@ class App extends Component {
     
     return (
       <div className='App'>
-        {loggedIn && <nav className='container nav justify-content-center' style={{ marginBottom: '2rem' }}>
-          <Link className='nav-link active' to='/jobs'>Jobs</Link>
-          <Link className='nav-link' to='/job/posts'>Create Job</Link>
-          <Link className='nav-link' to='/logout'>Logout</Link>
-        </nav>}
-        {!loggedIn && <nav className='container nav justify-content-end' style={{ marginBottom: '2rem' }}>
-          <Link className='nav-link active' to='/login'>Login</Link>
-          <Link className='nav-link' to='/signup'>Sign up</Link>
-        </nav>}
+        {
+          loggedIn &&
+          <nav className='container nav justify-content-center' style={{ marginBottom: '2rem' }}>
+            <Link className='nav-link active' to='/jobs'>Jobs</Link>
+            <Link className='nav-link' to='/job/posts'>Create Job</Link>
+            <Link className='nav-link' to='/logout'>Logout</Link>
+          </nav>
+        }
+        {
+          !loggedIn &&
+          <nav className='container nav justify-content-end' style={{ marginBottom: '2rem' }}>
+            <Link className='nav-link active' to='/login'>Login</Link>
+            <Link className='nav-link' to='/signup'>Sign up</Link>
+          </nav>
+        }
         <Switch>
           <Route exact path='/' render={() => (
             <header className='App-header'>
-              <img src={logo} className='App-logo' alt='logo' />
               <div className='message'>{ this.state.apiMessage }</div>
             </header>
           )} />
