@@ -5,8 +5,9 @@ import logo from './logo.svg';
 import './App.css';
 import SignUp from './pages/SignUp';
 import Login from './pages/Login';
+import Post from './pages/Post';
 import JobPosting from './pages/JobPosting';
-import Posts from './pages/Posts';
+import JobApplicants from './pages/JobApplicants';
 
 class App extends Component {
   constructor(props) {
@@ -43,7 +44,8 @@ class App extends Component {
           <Route path='/signup' component={SignUp} />
           <Route path='/login' component={Login} />
           <Route exact path='/jobs' component={JobPosting} />
-          <Route path='/jobs/posts' component={Posts} />
+          <Route exact path='/jobs/posts' component={Post} />
+          <Route exact path='/jobs/:id' component={JobApplicants} />
         </Switch>
       </div>
     );

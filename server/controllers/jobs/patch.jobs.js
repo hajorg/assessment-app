@@ -11,9 +11,7 @@ const handler = async (req, res) => {
     const { id } = req.params;
     const { applicant_id } = req.body;
 
-    const payload = jwt.verify(req.body.token, process.env.APP_SECRET);
-    console.log(payload); //eslint-disable-line
-
+    const payload = jwt.verify(req.headers['x-access-token'], process.env.APP_SECRET);
     const [ job ] = await knex(table).where({ user_id: payload.user.id, id });
 
     if (!job) {
@@ -48,7 +46,7 @@ module.exports = [
   [
     check('id').exists().isInt(),
     body('applicant_id').exists().isInt(),
-    body('token').exists().isLength({ min: 3 }).isString(),
+    check('x-access-token').exists().isLength({ min: 3 }).isString(),
   ],
   validate,
   handler

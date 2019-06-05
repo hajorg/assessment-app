@@ -1,5 +1,5 @@
 const jwt = require('jsonwebtoken');
-const { body, validationResult } = require('express-validator/check');
+const { check, body, validationResult } = require('express-validator/check');
 
 const knex = require('../../../db_connection');
 const table = 'skills';
@@ -7,7 +7,7 @@ const table = 'skills';
 
 const handler = async (req, res) => {
   try {
-    const payload = jwt.verify(req.body.token, process.env.APP_SECRET);
+    const payload = jwt.verify(req.headers['x-access-token'], process.env.APP_SECRET);
 
     if (payload.user.role !== 'candidate') {
       return res.status(403).json({ error: 'You cannot perform this action:)' });
@@ -39,7 +39,7 @@ const validate = (req, res, next) => {
 module.exports = [
   [
     body('name').exists().isString(),
-    body('token').exists().isString()
+    check('x-access-token').exists().isString()
   ],
   validate,
   handler
