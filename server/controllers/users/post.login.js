@@ -15,7 +15,7 @@ const handler = async (req, res) => {
     let result = false;
     if (user) result = await bcrypt.compare(password, user.password);
 
-    if (!user || !result) return res.status(401).send({ error: 'Invalid username/password combination' });
+    if (!user || !result) return res.status(400).send({ error: 'Invalid username/password combination' });
 
     delete user.password;
 
@@ -39,8 +39,8 @@ const validate = (req, res, next) => {
 
 module.exports = [
   [
-    body('email').exists().isEmail(),
-    body('password').exists().isLength({ min: 8 }),
+    body('email', 'Email is required').exists().isEmail(),
+    body('password', 'Password is required').exists().isLength({ min: 1 }),
   ],
   validate,
   handler
