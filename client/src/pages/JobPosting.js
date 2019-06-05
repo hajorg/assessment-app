@@ -74,12 +74,15 @@ class Posts extends Component {
     return (
       <div className='container'>
         <h3>Jobs</h3>
+        {!this.state.jobs.length && 'No Job available!'}
         {
           <div id='alert'>
-          { this.state.error &&
-          <div className='alert alert-danger' role='alert'>
-            An error occurred with your application :(
-            </div> }
+            {
+              this.state.error &&
+              <div className='alert alert-danger' role='alert'>
+                An error occurred with your application :(
+              </div>
+            }
           </div>
         }
         {jobs}
