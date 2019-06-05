@@ -44,7 +44,7 @@ class JobPosting extends Component {
     e.preventDefault();
     const data = await this.createJob();
     if (!data.error) {
-      return this.props.history.push('/');
+      return this.props.history.push('/jobs');
     }
     this.setState({ error: true });
   }

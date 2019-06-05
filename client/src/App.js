@@ -1,10 +1,11 @@
 import React, { Component } from 'react';
-import { Switch, Route } from 'react-router-dom';
+import { Link, Route, Switch } from 'react-router-dom';
 
 import logo from './logo.svg';
 import './App.css';
 import SignUp from './pages/SignUp';
 import Login from './pages/Login';
+import Logout from './pages/Logout';
 import Post from './pages/Post';
 import JobPosting from './pages/JobPosting';
 import JobApplicants from './pages/JobApplicants';
@@ -14,13 +15,18 @@ class App extends Component {
     super(props);
 
     this.state = {
-      apiMessage: 'Not yet available'
+      apiMessage: 'Not yet available',
+      loggedIn: false
     };
+
+    this.handleToken = this.handleToken.bind(this);
+    this.handleLogout = this.handleLogout.bind(this);
   }
 
   async componentDidMount() {
     const data = await this.fetchWelcomeMessage();
-    this.setState(prev => ({ ...prev, apiMessage: data.message }));
+    const loggedIn = localStorage.getItem('token') && localStorage.getItem('token') !== 'undefined';
+    this.setState(prev => ({ ...prev, apiMessage: data.message, loggedIn }));
   }
 
   async fetchWelcomeMessage() {
@@ -31,9 +37,38 @@ class App extends Component {
       console.log(error);
     }
   }
+
+  isLoggedIn() {
+    const token = localStorage.getItem('token');
+    const loggedIn = token && token !== 'undefined';
+    return loggedIn;
+  }
+
+  handleToken() {
+    this.setState({
+      loggedIn: true
+    });
+  }
+
+  handleLogout() {
+    this.setState({
+      loggedIn: false
+    });
+  }
   render() {
+    const { loggedIn } = this.state;
+    
     return (
       <div className='App'>
+        {loggedIn && <nav className='container nav justify-content-center' style={{ marginBottom: '2rem' }}>
+          <Link className='nav-link active' to='/jobs'>Jobs</Link>
+          <Link className='nav-link' to='/job/posts'>Create Job</Link>
+          <Link className='nav-link' to='/logout'>Logout</Link>
+        </nav>}
+        {!loggedIn && <nav className='container nav justify-content-end' style={{ marginBottom: '2rem' }}>
+          <Link className='nav-link active' to='/login'>Login</Link>
+          <Link className='nav-link' to='/signup'>Sign up</Link>
+        </nav>}
         <Switch>
           <Route exact path='/' render={() => (
             <header className='App-header'>
@@ -41,11 +76,12 @@ class App extends Component {
               <div className='message'>{ this.state.apiMessage }</div>
             </header>
           )} />
-          <Route path='/signup' component={SignUp} />
-          <Route path='/login' component={Login} />
+          <Route path='/signup' render={(props) => <SignUp {...props} handleToken={this.handleToken} />} />
+          <Route path='/login' render={(props) => <Login {...props} handleToken={this.handleToken} />} />
+          <Route path='/logout' render={(props) => <Logout {...props} handleLogout={this.handleLogout} />} />
           <Route exact path='/jobs' component={JobPosting} />
-          <Route exact path='/jobs/posts' component={Post} />
           <Route exact path='/jobs/:id' component={JobApplicants} />
+          <Route exact path='/job/posts' component={Post} />
         </Switch>
       </div>
     );

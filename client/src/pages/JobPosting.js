@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import { Link } from 'react-router-dom';
 
 class Posts extends Component {
   constructor(props) {
@@ -7,7 +8,6 @@ class Posts extends Component {
     this.state = {
       jobs: []
     };
-    console.log('helllo')
 
     this.handleClick = this.handleClick.bind(this);
   }
@@ -17,7 +17,6 @@ class Posts extends Component {
     try {
       const token = localStorage.getItem('token');
       if (!token || token === 'undefined') return this.props.history.push('/');
-      console.log('got here?')
       const res = await fetch('/api/v1/jobs', { headers: { 'x-access-token': token } });
       const data = await res.json();
       this.setState({
@@ -43,7 +42,7 @@ class Posts extends Component {
       if (data.error || data.errors) {
         return this.handleError();
       }
-      return this.props.history.push('/');
+      return this.props.history.push('/jobs');
     } catch (error) {
       console.log(error);
     }
@@ -59,7 +58,7 @@ class Posts extends Component {
     const jobs = this.state.jobs.map((job) => (
       <div key={job.job_id} className='card text-center' style={{ marginTop: '2rem' }}>
           <div className='card-header'>
-          {job.title}
+            <Link to={`/jobs/${job.job_id}`}>{job.title}</Link>
           </div>
           <div className='card-body'>
             <p className='card-text'>{job.description}</p>

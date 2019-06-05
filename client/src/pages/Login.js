@@ -34,6 +34,7 @@ class Login extends Component {
     const data = await this.login();
     if (!data.error && data.token) {
       localStorage.setItem('token', data.token);
+      this.props.handleToken();
       return this.props.history.push('/');
     }
     this.setState({ error: true });

@@ -47,8 +47,9 @@ class JobApplicants extends Component {
   }
 
   async handleClick(user) {
+    const jobId = this.props.match.params.id;
     try {
-      const res = await fetch(`/api/v1/jobs/${this.props.match.params.id}`, {
+      const res = await fetch(`/api/v1/jobs/${jobId}`, {
         method: 'PATCH',
           headers: {
             'Content-Type': 'application/json',
@@ -59,10 +60,9 @@ class JobApplicants extends Component {
 
       const data = await res.json();
       if (data.error || data.errors) {
-        console.log(data.error || data.errors);
         return this.handleError();
       }
-      return this.props.history.push('/');
+      return this.props.history.push('/jobs');
     } catch (error) {
       console.log(error);
     }
@@ -83,7 +83,6 @@ class JobApplicants extends Component {
     );
 
     const accepted = this.state.jobApplications.filter((job) => job.accepted);
-    console.log(accepted)
 
     const jobApplicants = this.state.applicants.map((applicant) => (
       <div key={applicant.id} className='card text-center' style={{ marginTop: '2rem' }}>

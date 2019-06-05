@@ -30,7 +30,7 @@ class SignUp extends Component {
       return this.props.history.push('/');
     }
   }
-  
+
   handleChange(e) {
     if (this.state.error) this.setState({ error: false });
     const jobSkills = [];
@@ -54,6 +54,7 @@ class SignUp extends Component {
     const data = await this.createUser();
     if (!data.error && data.token) {
       localStorage.setItem('token', data.token);
+      this.props.handleToken();
       return this.props.history.push('/');
     }
     this.setState({ error: true });

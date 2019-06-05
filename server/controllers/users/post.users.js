@@ -53,7 +53,7 @@ module.exports = [
     body('password').exists().isLength({ min: 8 }),
     body('location').exists().isString(),
     body('role').exists().isIn(['client', 'candidate']),
-    body('bio').isString().isEmpty(),
+    body('bio').isString(),
     body('skills').isArray()
   ],
   validate,
