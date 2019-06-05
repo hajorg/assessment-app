@@ -16,7 +16,8 @@ class SignUp extends Component {
       bio: '',
       location: '',
       role_options: [ 'candidate', 'client' ],
-      error: false,
+      error: '',
+      errors: [],
       skills: []
     };
 
@@ -57,7 +58,7 @@ class SignUp extends Component {
       this.props.handleToken();
       return this.props.history.push('/');
     }
-    this.setState({ error: true });
+    this.setState({ error: data.error || '',  errors: data.errors || [] });
   }
 
   async createUser() {
@@ -83,6 +84,9 @@ class SignUp extends Component {
         {item.name}
       </option>
     ));
+    const errors = this.state.errors.map((error, i) =>
+      <li className='list-group-item d-flex justify-content-between align-items-center' key={i}>{error.msg}</li>
+    ); 
 
     return (
       <div className='container' style={{
@@ -92,9 +96,21 @@ class SignUp extends Component {
         width: '40rem'
       }}>
         <h3>Sign Up</h3>
-        {this.state.error && <div className='alert alert-danger' role='alert'>
-          An error occurred with your application :(
-        </div>}
+        {
+          (this.state.error || this.state.errors.length > 0) &&
+          <div>
+            {
+              this.state.error &&
+              <div className='alert alert-danger' role='alert'>
+                {this.state.error}
+              </div>
+            }
+            <ul className='list-group'>
+              {errors}
+            </ul>
+          </div>
+        }
+        <br />
         <form className='container'>
           <div className='form-group'>
             <label htmlFor='first_name'>First Name</label>
