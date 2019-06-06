@@ -33,7 +33,7 @@ class SignUp extends Component {
   }
 
   handleChange(e) {
-    if (this.state.error) this.setState({ error: false });
+    if (this.state.error || this.state.errors.length) this.setState({ error: '', errors: [] });
     const jobSkills = [];
     if (e.target.type === 'select-multiple') {
       const options = e.target.options;
@@ -105,7 +105,7 @@ class SignUp extends Component {
                 {this.state.error}
               </div>
             }
-            <ul className='list-group'>
+            <ul className='list-group' style={{ color: 'red' }}>
               {errors}
             </ul>
           </div>

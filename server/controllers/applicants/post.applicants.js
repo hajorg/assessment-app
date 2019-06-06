@@ -1,13 +1,12 @@
-const jwt = require('jsonwebtoken');
 const { body, validationResult } = require('express-validator/check');
 
 const knex = require('../../../db_connection');
+const Authentication = require('../../middleware/auth');
 const table = 'job_applications';
 
 const handler = async (req, res) => {
   try {
-    const payload = jwt.verify(req.headers['x-access-token'], process.env.APP_SECRET);
-    console.log(payload); //eslint-disable-line 
+    const payload = req.decoded;
 
     if (payload.user.role !== 'candidate') {
       return res.status(403).json({ error: 'You cannot perform this action:)' });
@@ -54,7 +53,7 @@ const handler = async (req, res) => {
 
   } catch (error) {
     console.log(error); //eslint-disable-line
-    res.status(422).json({ error: 'An error occurred' });
+    res.status(500).json({ error: 'An error occurred' });
   }
 };
 
@@ -68,6 +67,7 @@ const validate = (req, res, next) => {
 };
 
 module.exports = [
+  Authentication.auth,
   [
     body('job_id').exists().isInt()
   ],

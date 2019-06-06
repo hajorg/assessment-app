@@ -1,14 +1,12 @@
-const jwt = require('jsonwebtoken');
-
 const knex = require('../../../db_connection');
-
+const Authentication = require('../../middleware/auth');
 const table = 'jobs';
 const applicantTable = 'job_applications';
 
 const handler = async (req, res) => {
   try {
     const { id } = req.params;
-    const payload = jwt.verify(req.headers['x-access-token'], process.env.APP_SECRET);
+    const payload = req.decoded;
 
     const [ job ] = await knex(table).select('*').where({ id, user_id: payload.user.id });
     if (!job) {
@@ -19,10 +17,11 @@ const handler = async (req, res) => {
     res.status(200).json(jobApplicants);
   } catch (error) {
     console.log(error); //eslint-disable-line
-    res.status(422).json({ error: 'An error occurred' });
+    res.status(500).json({ error: 'An error occurred' });
   }
 };
 
 module.exports = [
+  Authentication.auth,
   handler
 ];

@@ -1,12 +1,12 @@
-const jwt = require('jsonwebtoken');
 const { body, validationResult } = require('express-validator/check');
 
 const knex = require('../../../db_connection');
+const Authentication = require('../../middleware/auth');
 const table = 'users';
 
 const handler = async (req, res) => {
   try {
-    const payload = jwt.verify(req.headers['x-access-token'], process.env.APP_SECRET);
+    const payload = req.decoded;
     const { first_name, last_name, email, location } = req.body;
     const { id } = req.params;
     const [ foundUser ] = await knex(table).select('*').where({ id });
@@ -23,7 +23,7 @@ const handler = async (req, res) => {
     res.status(201).json({ ...user });
   } catch (error) {
     console.log(error); //eslint-disable-line
-    res.status(422).json({ error: 'An error occurred' });
+    res.status(500).json({ error: 'An error occurred' });
   }
 };
 
@@ -37,6 +37,7 @@ const validate = (req, res, next) => {
 };
 
 module.exports = [
+  Authentication.auth,
   [
     body('first_name').exists().isLength({ min: 3 }).isString(),
     body('last_name').exists().isLength({ min: 3 }).isString(),

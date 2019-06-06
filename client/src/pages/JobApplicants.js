@@ -6,7 +6,9 @@ class JobApplicants extends Component {
 
     this.state = {
       jobApplications: [],
-      applicants: []
+      applicants: [],
+      success: false,
+      error: false
     };
 
     this.handleClick = this.handleClick.bind(this);
@@ -62,7 +64,8 @@ class JobApplicants extends Component {
       if (data.error || data.errors) {
         return this.handleError();
       }
-      return this.props.history.push('/jobs');
+      window.scrollTo(0, document.getElementById('alert').offsetTop - 20);
+      this.setState({ success: true, error: false });
     } catch (error) {
       console.log(error);
     }
@@ -106,10 +109,17 @@ class JobApplicants extends Component {
         <h3>Job Applicants</h3>
         {
           <div id='alert'>
-          { this.state.error &&
-          <div className='alert alert-danger' role='alert'>
-            An error occurred with your application :(
-            </div> }
+            { this.state.error &&
+              <div className='alert alert-danger' role='alert'>
+              An error occurred with your application :(
+              </div> 
+            }
+            {
+              this.state.success &&
+              <div className='alert alert-success' role='alert'>
+                Your application was successful!
+              </div>
+            }
           </div>
         }
         {this.state.applicants.length && jobApplicants}

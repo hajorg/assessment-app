@@ -1,19 +1,22 @@
 import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
 
+import checkAuthencation from '../utils/checkUnauthentication';
+
 class Posts extends Component {
   constructor(props) {
     super(props);
 
     this.state = {
-      jobs: []
+      jobs: [],
+      success: false,
+      error: false
     };
 
     this.handleClick = this.handleClick.bind(this);
   }
 
   async componentDidMount() {
-    this.ref = window.document.getElementById('alert');
     try {
       const token = localStorage.getItem('token');
       if (!token || token === 'undefined') return this.props.history.push('/');
@@ -38,11 +41,14 @@ class Posts extends Component {
           body: JSON.stringify({ job_id: job.job_id })
       });
 
+      checkAuthencation(res, this.props.history);
+
       const data = await res.json();
       if (data.error || data.errors) {
         return this.handleError();
       }
-      return this.props.history.push('/jobs');
+      window.scrollTo(0, document.getElementById('alert').offsetTop - 20);
+      this.setState({ success: true, error: false });
     } catch (error) {
       console.log(error);
     }
@@ -50,7 +56,7 @@ class Posts extends Component {
 
   handleError() {
     window.scrollTo(0, document.getElementById('alert').offsetTop - 20);
-    this.setState({ error: true });
+    this.setState({ error: true, success: false });
     return;
   }
 
@@ -81,6 +87,12 @@ class Posts extends Component {
               this.state.error &&
               <div className='alert alert-danger' role='alert'>
                 An error occurred with your application :(
+              </div>
+            }
+            {
+              this.state.success &&
+              <div className='alert alert-success' role='alert'>
+                Your application was successful!
               </div>
             }
           </div>

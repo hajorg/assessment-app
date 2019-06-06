@@ -1,13 +1,10 @@
-const jwt = require('jsonwebtoken');
-
 const knex = require('../../../db_connection');
+const Authentication = require('../../middleware/auth');
 const table = 'jobs';
 
 
 const handler = async (req, res) => {
   try {
-    jwt.verify(req.headers['x-access-token'], process.env.APP_SECRET);
-
     const jobs = await knex(table).select('*').leftJoin('skills', 'jobs.id', 'skills.job_id');
     const results = [];
     const resObj = {};
@@ -30,10 +27,11 @@ const handler = async (req, res) => {
     res.status(200).json(results);
   } catch (error) {
     console.log(error); //eslint-disable-line
-    res.status(422).json({ error: 'An error occurred' });
+    res.status(500).json({ error: 'An error occurred' });
   }
 };
 
 module.exports = [
+  Authentication.auth,
   handler
 ];
