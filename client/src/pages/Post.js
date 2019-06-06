@@ -9,7 +9,9 @@ class JobPosting extends Component {
     this.state = {
       title: '',
       description: '',
-      skills: []
+      skills: [],
+      error: '',
+      errors: []
     };
 
     this.handleChange = this.handleChange.bind(this);
@@ -33,7 +35,7 @@ class JobPosting extends Component {
       }
     }
     
-    if (this.state.error) this.setState({ error: false });
+    if (this.state.error || this.state.errors.length) this.setState({ error: '', errors: [] });
     const { name, value } = e.target;
     this.setState(() => ({
       [name]: jobSkills.length ? jobSkills : value
@@ -43,10 +45,12 @@ class JobPosting extends Component {
   async handleSubmit(e) {
     e.preventDefault();
     const data = await this.createJob();
-    if (!data.error) {
-      return this.props.history.push('/jobs');
+    if (data.error || (data.errors && data.errors.length)) {
+      this.setState({ error: data.error || '', errors: data.errors || [] });
+      return;
     }
-    this.setState({ error: true });
+
+    return this.props.history.push('/jobs');
   }
 
   async createJob() {
@@ -72,6 +76,9 @@ class JobPosting extends Component {
         {item.name}
       </option>
     ));
+    const errors = this.state.errors.map((error, i) =>
+      <li className='list-group-item d-flex justify-content-between align-items-center' key={i}>{error.msg}</li>
+    ); 
     return (
       <div className='container' style={{
         padding: '1.5rem',
@@ -80,9 +87,21 @@ class JobPosting extends Component {
         width: '40rem'
       }}>
         <h3>Post Job</h3>
-        {this.state.error && <div className='alert alert-danger' role='alert'>
-          An error occurred with your application :(
-        </div>}
+        {
+          (this.state.error || this.state.errors.length > 0) &&
+          <div>
+            {
+              this.state.error &&
+              <div className='alert alert-danger' role='alert'>
+                {this.state.error}
+              </div>
+            }
+            <ul className='list-group' style={{ color: 'red' }}>
+              {errors}
+            </ul>
+          </div>
+        }
+        <br />
         <form className='container'>
           <div className='form-group'>
             <label htmlFor='title'>Job Title</label>

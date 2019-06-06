@@ -7,7 +7,6 @@ const table = 'job_applications';
 const handler = async (req, res) => {
   try {
     const payload = req.decoded;
-    console.log(payload); //eslint-disable-line 
 
     if (payload.user.role !== 'candidate') {
       return res.status(403).json({ error: 'You cannot perform this action:)' });

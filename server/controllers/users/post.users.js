@@ -10,6 +10,11 @@ const handler = async (req, res) => {
   try {
     const { password, first_name, last_name, email, location, role, bio, skills } = req.body;
     const hashedPassword = await bcrypt.hash(password, 10);
+    const [ foundUser ] = await knex(table).select('*').where({ email });
+    if (foundUser) {
+      return res.status(409).json({ error: 'Sorry, your email is not available' });
+    }
+
     const [user] = await knex(table).insert({
       first_name,
       last_name,

@@ -80,7 +80,7 @@ class Login extends Component {
                 {this.state.error}
               </div>
             }
-            <ul className='list-group'>
+            <ul className='list-group' style={{ color: 'red' }}>
               {errors}
             </ul>
           </div>

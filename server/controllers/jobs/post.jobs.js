@@ -42,9 +42,9 @@ const validate = (req, res, next) => {
 module.exports = [
   Authentication.auth,
   [
-    body('title').exists().isLength({ min: 3 }),
-    body('description').exists().isString(),
-    body('skills').exists().isArray()
+    body('title', 'Title is required with at least 3 characters').exists().isLength({ min: 3 }),
+    body('description', 'Description is required').exists().isString().isLength({ min: 5 }),
+    body('skills', 'Select at least a skill:)').exists().isArray().isLength({ min: 1 })
   ],
   validate,
   handler
