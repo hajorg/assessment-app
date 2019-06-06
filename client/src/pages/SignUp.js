@@ -59,6 +59,7 @@ class SignUp extends Component {
       return this.props.history.push('/');
     }
     this.setState({ error: data.error || '',  errors: data.errors || [] });
+    window.scrollTo(0, document.getElementById('signup').offsetTop - 20);
   }
 
   async createUser() {
@@ -95,7 +96,7 @@ class SignUp extends Component {
         borderWidth: '2rem',
         width: '40rem'
       }}>
-        <h3>Sign Up</h3>
+        <h3 id='signup'>Sign Up</h3>
         {
           (this.state.error || this.state.errors.length > 0) &&
           <div>
