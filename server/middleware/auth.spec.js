@@ -1,8 +1,5 @@
 require('dotenv').config();
-// jest.mock('jsonwebtoken');
 const jwt = require('jsonwebtoken');
-// jwt.verify
-
 
 const Authentication = require('./auth');
 
