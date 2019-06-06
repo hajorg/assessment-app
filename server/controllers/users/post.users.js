@@ -54,7 +54,7 @@ module.exports = [
   [
     body('first_name', 'First Name is Required').exists().isLength({ min: 3 }).isString(),
     body('last_name', 'Last Name is Required').exists().isLength({ min: 3 }).isString(),
-    body('email', 'Email is should be valid').exists().isEmail(),
+    body('email', 'Email should be a valid email').exists().isEmail(),
     body('password', 'At least 8 characters of password is required').exists().isLength({ min: 8 }),
     body('location', 'Location is required').exists().isString(),
     body('role').exists().isIn(['client', 'candidate']),

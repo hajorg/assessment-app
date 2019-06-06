@@ -10,6 +10,7 @@ const handler = async (req, res) => {
     const { id } = req.params;
 
     const [ user ] = await knex(table).select('*').where({ id });
+    if (!user) return res.status(404).send({ error: 'User not found' });
     const skills = await knex('skills').select('*').where({ candidate_id: id });
     delete user.password;
     user.skills = skills;
