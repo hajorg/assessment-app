@@ -10,7 +10,7 @@ class Posts extends Component {
     this.state = {
       jobs: [],
       success: false,
-      error: false
+      error: ''
     };
 
     this.handleClick = this.handleClick.bind(this);
@@ -45,18 +45,18 @@ class Posts extends Component {
 
       const data = await res.json();
       if (data.error || data.errors) {
-        return this.handleError();
+        return this.handleError(data.error);
       }
       window.scrollTo(0, document.getElementById('alert').offsetTop - 20);
-      this.setState({ success: true, error: false });
+      this.setState({ success: true, error: '' });
     } catch (error) {
       console.log(error);
     }
   }
 
-  handleError() {
+  handleError(error) {
     window.scrollTo(0, document.getElementById('alert').offsetTop - 20);
-    this.setState({ error: true, success: false });
+    this.setState({ error, success: false });
     return;
   }
 
@@ -86,7 +86,7 @@ class Posts extends Component {
             {
               this.state.error &&
               <div className='alert alert-danger' role='alert'>
-                An error occurred with your application :(
+                { this.state.error } :(
               </div>
             }
             {

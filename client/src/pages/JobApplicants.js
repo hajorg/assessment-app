@@ -111,7 +111,7 @@ class JobApplicants extends Component {
           <div id='alert'>
             { this.state.error &&
               <div className='alert alert-danger' role='alert'>
-              An error occurred with your application :(
+                { this.state.error }
               </div> 
             }
             {
