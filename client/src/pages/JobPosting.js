@@ -64,7 +64,7 @@ class Posts extends Component {
     const jobs = this.state.jobs.map((job) => (
       <div key={job.job_id} className='card text-center' style={{ marginTop: '2rem' }}>
           <div className='card-header'>
-            <Link to={`/jobs/${job.job_id}`}>{job.title}</Link>
+            <Link style={{ textDecoration: 'underline' }} to={`/jobs/${job.job_id}`}>{job.title}</Link>
           </div>
           <div className='card-body'>
             <p className='card-text'>{job.description}</p>

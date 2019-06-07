@@ -5,7 +5,7 @@ const table = 'jobs';
 
 const handler = async (req, res) => {
   try {
-    const jobs = await knex(table).select('*').leftJoin('skills', 'jobs.id', 'skills.job_id');
+    const jobs = await knex(table).select('*').orderByRaw('job_id Desc').leftJoin('skills', 'jobs.id', 'skills.job_id');
     const results = [];
     const resObj = {};
 
@@ -22,7 +22,6 @@ const handler = async (req, res) => {
         }
       }
     }
-
 
     res.status(200).json(results);
   } catch (error) {
