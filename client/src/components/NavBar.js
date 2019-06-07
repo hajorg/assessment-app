@@ -12,7 +12,7 @@ const NavBar = ({ loggedIn }) => (
       { loggedIn &&
         <ul className='navbar-nav mr-auto'>
           <li className='nav-item active'>
-            <Link className='nav-link' to='/jobs'>Available Jobs <span className='sr-only'>(current)</span></Link>
+            <Link className='nav-link' to='/jobs'>Available Jobs<span className='sr-only'>(current)</span></Link>
           </li>
           <li className='nav-item'>
             <Link className='nav-link' to='/jobs/post'>Create Job</Link>
