@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 
 import skills from '../utils/skills';
 
-class JobPosting extends Component {
+class Post extends Component {
   constructor(props) {
     super(props);
 
@@ -11,7 +11,8 @@ class JobPosting extends Component {
       description: '',
       skills: [],
       error: '',
-      errors: []
+      errors: [],
+      requestInProgress: false
     };
 
     this.handleChange = this.handleChange.bind(this);
@@ -46,7 +47,11 @@ class JobPosting extends Component {
     e.preventDefault();
     const data = await this.createJob();
     if (data.error || (data.errors && data.errors.length)) {
-      this.setState({ error: data.error || '', errors: data.errors || [] });
+      this.setState({
+        error: data.error || '',
+        errors: data.errors || [],
+        requestInProgress: false
+      });
       return;
     }
 
@@ -64,6 +69,8 @@ class JobPosting extends Component {
         },
         body: JSON.stringify({ title, description, skills })
       });
+
+      this.setState({ requestInProgress: true });
       return res.json();
     } catch (error) {
       console.log(error);
@@ -79,6 +86,10 @@ class JobPosting extends Component {
     const errors = this.state.errors.map((error, i) =>
       <li className='list-group-item d-flex justify-content-between align-items-center' key={i}>{error.msg}</li>
     ); 
+    const button = !this.state.requestInProgress
+      ? <button className='btn btn-primary btn-lg' type='submit' onClick={this.handleSubmit}>Post</button>
+      : 'Please wait...';
+
     return (
       <div className='container' style={{
         padding: '1.5rem',
@@ -121,7 +132,7 @@ class JobPosting extends Component {
             <textarea className='form-control form-control-sm' id='description' name='description' value={this.state.description} onChange={this.handleChange} rows='3' />
           </div>
           <div className='form-group'>
-            <button className='btn btn-primary btn-lg' type='submit' onClick={this.handleSubmit}>Post</button>
+            {button}
           </div>
         </form>
       </div>
@@ -129,4 +140,4 @@ class JobPosting extends Component {
   }
 }
 
-export default JobPosting;
+export default Post;

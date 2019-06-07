@@ -10,7 +10,8 @@ class Login extends Component {
       email: '',
       password: '',
       error: '',
-      errors: []
+      errors: [],
+      requestInProgress: false
     };
 
     this.handleChange = this.handleChange.bind(this);
@@ -40,7 +41,11 @@ class Login extends Component {
       return this.props.history.push('/');
     }
 
-    this.setState({ error: data.error || '', errors: data.errors || [] });
+    this.setState({
+      error: data.error || '',
+      errors: data.errors || [],
+      requestInProgress: false
+    });
   }
 
   async login() {
@@ -53,6 +58,8 @@ class Login extends Component {
         },
         body: JSON.stringify({ email, password })
       });
+
+      this.setState({ requestInProgress: true });
       return res.json();
     } catch (error) {
       console.log(error);
@@ -62,7 +69,11 @@ class Login extends Component {
   render() {
     const errors = this.state.errors.map((error, i) =>
       <li className='list-group-item d-flex justify-content-between align-items-center' key={i}>{error.msg}</li>
-    ); 
+    );
+    const button = !this.state.requestInProgress
+      ? <button className='btn btn-primary btn-lg' type='submit' onClick={this.handleSubmit}>Login</button>
+      : 'Please wait...';
+
     return (
       <div className='container' style={{
         padding: '1.5rem',
@@ -96,7 +107,7 @@ class Login extends Component {
             <input type='password' name='password' id='password' className='form-control form-control-sm' value={this.state.password} onChange={this.handleChange} />
           </div>
           <div className='form-group'>
-            <button className='btn btn-primary btn-lg' type='submit' onClick={this.handleSubmit}>Login</button>
+            {button}
           </div>
         </form>
       </div>
