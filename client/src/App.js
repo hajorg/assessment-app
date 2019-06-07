@@ -70,9 +70,9 @@ class App extends Component {
           <Route path='/signup' render={(props) => <SignUp {...props} handleToken={this.handleToken} />} />
           <Route path='/login' render={(props) => <Login {...props} handleToken={this.handleToken} />} />
           <Route path='/logout' render={(props) => <Logout {...props} handleLogout={this.handleLogout} />} />
-          <Route exact path='/jobs/post' component={Post} />
           <Route exact path='/jobs' component={JobPostings} />
-          <Route exact path='/jobs/:id' component={JobApplicants} />
+          <Route exact path='/jobs/post' component={Post} />
+          <Route path='/jobs/:id' component={JobApplicants} />
         </Switch>
       </div>
     );
