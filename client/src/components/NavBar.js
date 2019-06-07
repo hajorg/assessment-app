@@ -15,7 +15,7 @@ const NavBar = ({ loggedIn }) => (
             <Link className='nav-link' to='/jobs'>Available Jobs <span className='sr-only'>(current)</span></Link>
           </li>
           <li className='nav-item'>
-            <Link className='nav-link' to='/job/posts'>Create Job</Link>
+            <Link className='nav-link' to='/jobs/post'>Create Job</Link>
           </li>
           <li className='nav-item'>
             <Link className='nav-link' to='/logout'>Logout</Link>

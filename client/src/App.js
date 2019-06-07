@@ -6,7 +6,7 @@ import SignUp from './pages/SignUp';
 import Login from './pages/Login';
 import Logout from './pages/Logout';
 import Post from './pages/Post';
-import JobPosting from './pages/JobPosting';
+import JobPostings from './pages/JobPostings';
 import JobApplicants from './pages/JobApplicants';
 import NavBar from './components/NavBar';
 
@@ -70,9 +70,9 @@ class App extends Component {
           <Route path='/signup' render={(props) => <SignUp {...props} handleToken={this.handleToken} />} />
           <Route path='/login' render={(props) => <Login {...props} handleToken={this.handleToken} />} />
           <Route path='/logout' render={(props) => <Logout {...props} handleLogout={this.handleLogout} />} />
-          <Route exact path='/jobs' component={JobPosting} />
+          <Route exact path='/jobs/post' component={Post} />
+          <Route exact path='/jobs' component={JobPostings} />
           <Route exact path='/jobs/:id' component={JobApplicants} />
-          <Route exact path='/job/posts' component={Post} />
         </Switch>
       </div>
     );

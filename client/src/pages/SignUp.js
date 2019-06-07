@@ -18,7 +18,8 @@ class SignUp extends Component {
       role_options: [ 'candidate', 'client' ],
       error: '',
       errors: [],
-      skills: []
+      skills: [],
+      requestInProgress: false
     };
 
     this.handleChange = this.handleChange.bind(this);
@@ -53,6 +54,7 @@ class SignUp extends Component {
   async handleSubmit(e) {
     e.preventDefault();
     const data = await this.createUser();
+    this.setState({ requestInProgress: false });
     if (!data.error && data.token) {
       localStorage.setItem('token', data.token);
       this.props.handleToken();
@@ -72,6 +74,7 @@ class SignUp extends Component {
         },
         body: JSON.stringify({ first_name, last_name, email, password, bio, location, role, skills })
       });
+      this.setState({ requestInProgress: true });
       return res.json();
     } catch (error) {
       console.log(error);
@@ -87,7 +90,10 @@ class SignUp extends Component {
     ));
     const errors = this.state.errors.map((error, i) =>
       <li className='list-group-item d-flex justify-content-between align-items-center' key={i}>{error.msg}</li>
-    ); 
+    );
+    const button = !this.state.requestInProgress
+      ? <button className='btn btn-primary btn-lg' type='submit' onClick={this.handleSubmit}>Sign Up</button>
+      : 'Please wait...';
 
     return (
       <div className='container' style={{
@@ -153,7 +159,7 @@ class SignUp extends Component {
             <textarea className='form-control form-control-sm' id='bio' name='bio' value={this.state.bio} onChange={this.handleChange} rows='3' />
           </div>
           <div className='form-group'>
-            <button className='btn btn-primary btn-lg' type='submit' onClick={this.handleSubmit}>Sign Up</button>
+            {button}
           </div>
         </form>
       </div>
