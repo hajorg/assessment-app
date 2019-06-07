@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 
 import checkAuthencation from '../utils/checkUnauthentication';
 
-class Posts extends Component {
+class JobPostings extends Component {
   constructor(props) {
     super(props);
 
@@ -103,4 +103,4 @@ class Posts extends Component {
   }
 }
 
-export default Posts;
+export default JobPostings;
