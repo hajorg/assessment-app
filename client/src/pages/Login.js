@@ -50,6 +50,8 @@ class Login extends Component {
 
   async login() {
     const { email, password } = this.state;
+    this.setState({ requestInProgress: true });
+
     try {
       const res = await fetch('/api/v1/login', {
         method: 'POST',
@@ -59,7 +61,6 @@ class Login extends Component {
         body: JSON.stringify({ email, password })
       });
 
-      this.setState({ requestInProgress: true });
       return res.json();
     } catch (error) {
       console.log(error);

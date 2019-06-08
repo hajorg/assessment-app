@@ -61,6 +61,8 @@ class Post extends Component {
   async createJob() {
     const { title, description, skills } = this.state;
     try {
+      this.setState({ requestInProgress: true });
+
       const res = await fetch('/api/v1/jobs', {
         method: 'POST',
         headers: {
@@ -69,8 +71,6 @@ class Post extends Component {
         },
         body: JSON.stringify({ title, description, skills })
       });
-
-      this.setState({ requestInProgress: true });
       return res.json();
     } catch (error) {
       console.log(error);

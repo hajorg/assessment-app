@@ -67,6 +67,7 @@ class SignUp extends Component {
   async createUser() {
     const { first_name, last_name, email, password, bio, location, role, skills } = this.state;
     try {
+      this.setState({ requestInProgress: true });
       const res = await fetch('/api/v1/users', {
         method: 'POST',
         headers: {
@@ -74,7 +75,6 @@ class SignUp extends Component {
         },
         body: JSON.stringify({ first_name, last_name, email, password, bio, location, role, skills })
       });
-      this.setState({ requestInProgress: true });
       return res.json();
     } catch (error) {
       console.log(error);
