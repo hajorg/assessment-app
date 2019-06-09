@@ -48,7 +48,7 @@ class SignUp extends Component {
         }
       }
     }
-    
+
     const { name, value } = e.target;
     this.setState(() => ({
       [name]: jobSkills.length ? jobSkills : value
@@ -72,6 +72,7 @@ class SignUp extends Component {
     const { first_name, last_name, email, password, bio, location, role } = this.state;
     const mappedSkills = this.state.allSkills.filter((skill) => this.state.skills.includes(skill.name));
     const skills = mappedSkills.map(skill => ({ id: skill.id }));
+    this.setState({ requestInProgress: true });
     try {
       const res = await fetch('/api/v1/users', {
         method: 'POST',
@@ -80,7 +81,7 @@ class SignUp extends Component {
         },
         body: JSON.stringify({ first_name, last_name, email, password, bio, location, role, skills })
       });
-      this.setState({ requestInProgress: true });
+
       return res.json();
     } catch (error) {
       console.log(error);

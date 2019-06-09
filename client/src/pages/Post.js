@@ -70,6 +70,7 @@ class Post extends Component {
     const { title, description, allSkills } = this.state;
     const mappedSkills = allSkills.filter((skill) => this.state.skills.includes(skill.name));
     const skills = mappedSkills.map(skill => ({ id: skill.id }));
+    this.setState({ requestInProgress: true });
 
     try {
       const res = await fetch('/api/v1/jobs', {
@@ -81,7 +82,6 @@ class Post extends Component {
         body: JSON.stringify({ title, description, skills })
       });
 
-      this.setState({ requestInProgress: true });
       return res.json();
     } catch (error) {
       console.log(error);

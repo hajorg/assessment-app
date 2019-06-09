@@ -22,9 +22,12 @@ class JobPostings extends Component {
       if (!token || token === 'undefined') return this.props.history.push('/');
       const res = await fetch('/api/v1/jobs', { headers: { 'x-access-token': token } });
       const data = await res.json();
-      this.setState({
-        jobs: data
-      });
+      if (data.error) {
+        this.setState({ error: data.error });
+        return;
+      }
+
+      this.setState({ jobs: data });
     } catch (error) {
       console.log(error);
     }
