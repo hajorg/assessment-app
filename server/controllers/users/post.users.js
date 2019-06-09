@@ -2,7 +2,6 @@ const bcrypt = require('bcrypt');
 const { body, validationResult } = require('express-validator/check');
 
 const Authentication = require('../../middleware/auth');
-
 const knex = require('../../../db_connection');
 const table = 'users';
 
@@ -25,12 +24,12 @@ const handler = async (req, res) => {
       bio
     }).returning(['id', 'first_name', 'last_name', 'email', 'role']);
 
-    const userSkills = skills.map((skill) => ({ name: skill, candidate_id: user.id }));
-    if (userSkills.length) await knex('skills').insert(userSkills).returning('*');
-
     if (!user) {
       return res.status(400).json({ error: 'A problem occurred while creating your account. Please try again' });
     }
+
+    const userSkills = skills.map((skill) => ({ skill_id: skill.id, user_id: user.id }));
+    if (userSkills.length) await knex('user_skills').insert(userSkills).returning('*');
 
     const token = Authentication.generateToken(user);
 
@@ -47,7 +46,6 @@ const validate = (req, res, next) => {
     return res.status(422).json({ errors: errors.array() });
   }
   next();
-
 };
 
 module.exports = [

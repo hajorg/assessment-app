@@ -18,7 +18,6 @@ const handler = async (req, res) => {
     if (!user || !result) return res.status(400).send({ error: 'Invalid username/password combination' });
 
     delete user.password;
-
     const token = Authentication.generateToken(user);
 
     res.status(200).json({ ...user, token });
@@ -33,8 +32,8 @@ const validate = (req, res, next) => {
   if (!errors.isEmpty()) {
     return res.status(422).json({ errors: errors.array() });
   }
-  next();
 
+  next();
 };
 
 module.exports = [

@@ -7,7 +7,6 @@ const table = 'job_applications';
 const handler = async (req, res) => {
   try {
     const payload = req.decoded;
-
     if (payload.user.role !== 'candidate') {
       return res.status(403).json({ error: 'You cannot perform this action:)' });
     }
@@ -16,27 +15,22 @@ const handler = async (req, res) => {
     const applied = await knex(table).where({
       applicant_id: payload.user.id,
       job_id
-    }).select('*');
+    }).select('*').first();
 
-    if (applied.length) {
+    if (applied) {
       return res.status(400).json({ error: 'You have already applied for this job:)' });
     }
 
-    const jobSkills = await knex('skills').where({
-      job_id,
-      candidate_id: null
+    const jobSkills = await knex('job_skills').where({ job_id }).returning('*');
+    const userSkills = await knex('user_skills').where({
+      user_id: payload.user.id
     }).returning('*');
-
-    const userSkills = await knex('skills').where({
-      candidate_id: payload.user.id,
-      job_id: null
-    }).returning('*');
-    const uSkills = userSkills.map((skill) => skill.name);
-    const jSkills = jobSkills.map((skill) => skill.name);
+    const foundUserSkills = userSkills.map((skill) => skill.skill_id);
+    const foundJobSkills = jobSkills.map((skill) => skill.skill_id);
 
     let skillCounter = 0;
-    for (let i = 0; i < jSkills.length; i++ ) {
-      const valid = uSkills.includes(jSkills[i]);
+    for (let i = 0; i < foundJobSkills.length; i++) {
+      const valid = foundUserSkills.includes(foundJobSkills[i]);
       if (valid) skillCounter++;
     }
 
@@ -50,7 +44,6 @@ const handler = async (req, res) => {
     }).returning('*');
 
     res.status(201).json({ ...data });
-
   } catch (error) {
     console.log(error); //eslint-disable-line
     res.status(500).json({ error: 'An error occurred' });
@@ -62,8 +55,8 @@ const validate = (req, res, next) => {
   if (!errors.isEmpty()) {
     return res.status(422).json({ errors: errors.array() });
   }
-  next();
 
+  next();
 };
 
 module.exports = [

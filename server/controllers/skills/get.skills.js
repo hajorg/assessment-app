@@ -1,10 +1,9 @@
 const knex = require('../../../db_connection');
-const Authentication = require('../../middleware/auth');
 const table = 'skills';
+
 
 const handler = async (req, res) => {
   try {
-
     const skills = await knex(table).select('*');
     res.status(200).json(skills);
   } catch (error) {
@@ -14,6 +13,5 @@ const handler = async (req, res) => {
 };
 
 module.exports = [
-  Authentication.auth,
   handler
 ];

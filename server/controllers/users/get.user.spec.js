@@ -12,7 +12,7 @@ const payload = {
   password: 'password',
   location: 'Nigeria',
   role: 'client',
-  skills: ['Java', 'Go'],
+  skills: [ { id: 1 }, { id: 2 } ],
   bio: 'A software developer'
 };
 
@@ -29,7 +29,7 @@ describe('Get User /ap1/v1/users', () => {
   });
 
   afterEach(async() => {
-    await knex.truncate('skills');
+    await knex.truncate('user_skills');
     await knex.truncate('users');
   });
   afterAll(async () => knex.destroy());

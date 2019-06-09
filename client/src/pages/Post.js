@@ -1,7 +1,5 @@
 import React, { Component } from 'react';
 
-import skills from '../utils/skills';
-
 class Post extends Component {
   constructor(props) {
     super(props);
@@ -10,6 +8,7 @@ class Post extends Component {
       title: '',
       description: '',
       skills: [],
+      allSkills: [],
       error: '',
       errors: [],
       requestInProgress: false
@@ -19,10 +18,19 @@ class Post extends Component {
     this.handleSubmit = this.handleSubmit.bind(this);
   }
 
-  componentDidMount() {
+  async componentDidMount() {
     if (!localStorage.getItem('token') || localStorage.getItem('token') === 'undefined') {
       return this.props.history.push('/login');
     }
+
+    const res = await fetch('/api/v1/skills');
+    const data = await res.json();
+    if (data.error) {
+      this.setState({ error: data.error });
+      return;
+    }
+
+    this.setState({ allSkills: data });
   }
 
   handleChange(e) {
@@ -59,7 +67,10 @@ class Post extends Component {
   }
 
   async createJob() {
-    const { title, description, skills } = this.state;
+    const { title, description, allSkills } = this.state;
+    const mappedSkills = allSkills.filter((skill) => this.state.skills.includes(skill.name));
+    const skills = mappedSkills.map(skill => ({ id: skill.id }));
+
     try {
       const res = await fetch('/api/v1/jobs', {
         method: 'POST',
@@ -78,7 +89,7 @@ class Post extends Component {
   }
 
   render() {
-    const skillOptions = skills.map((item) => (
+  const skillOptions = this.state.allSkills.map((item) => (
       <option key={item.id} value={item.name}>
         {item.name}
       </option>

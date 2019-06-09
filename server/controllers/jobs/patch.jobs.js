@@ -5,7 +5,6 @@ const Authentication = require('../../middleware/auth');
 const table = 'jobs';
 const applicantTable = 'job_applications';
 
-
 const handler = async (req, res) => {
   try {
     const { id } = req.params;
@@ -38,8 +37,8 @@ const validate = (req, res, next) => {
   if (!errors.isEmpty()) {
     return res.status(422).json({ errors: errors.array() });
   }
-  next();
 
+  next();
 };
 
 module.exports = [

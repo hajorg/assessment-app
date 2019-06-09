@@ -4,7 +4,7 @@ const app = require('../../app');
 const knex = require('../../../db_connection');
 
 const server = supertest(app);
-const skills = ['Java', 'Go'];
+const skills = [ { id: 1, name: 'Java' }, { id: 2, name: 'Go' } ];
 const clientPayload = {
   first_name: 'John',
   last_name: 'Doe',
@@ -39,14 +39,14 @@ describe('Post job /api/v1/jobs', () => {
 
 
   afterEach(async() => {
-    await knex.truncate('skills');
+    await knex.truncate('user_skills');
     await knex.truncate('jobs');
     await knex.truncate('users');
   });
   afterAll(async () => knex.destroy());
 
   test('should allow client create a job', async () => {
-    const payload = { title: 'testing job', skills: ['Java', 'Go'], description: 'Just a description' };
+    const payload = { title: 'testing job', skills, description: 'Just a description' };
     const res = await server
       .post(url)
       .set({ 'x-access-token': client.token })
@@ -60,7 +60,7 @@ describe('Post job /api/v1/jobs', () => {
   });
 
   test('should not allow candidate create a job', async () => {
-    const payload = { title: 'testing job', skills: ['Java', 'React'], description: 'Just a description' };
+    const payload = { title: 'testing job', skills, description: 'Just a description' };
     await server
       .post(url)
       .set({ 'x-access-token': candidate.token })
