@@ -2,10 +2,13 @@ const knex = require('../../../db_connection');
 const Authentication = require('../../middleware/auth');
 const table = 'jobs';
 
-
 const handler = async (req, res) => {
   try {
-    const jobs = await knex(table).select('*').orderByRaw('job_id Desc').leftJoin('skills', 'jobs.id', 'skills.job_id');
+    const jobs = await knex(table)
+      .orderBy('jobs.id', 'desc')
+      .select(['jobs.id as job_id', 'jobs.title', 'jobs.description', 'jobs.updated_at', 'skills.name'])
+      .leftJoin('job_skills as js', 'js.job_id', 'jobs.id')
+      .leftJoin('skills', 'skills.id', 'js.skill_id');
     const results = [];
     const resObj = {};
 

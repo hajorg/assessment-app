@@ -2,20 +2,22 @@ const { body, validationResult } = require('express-validator/check');
 
 const knex = require('../../../db_connection');
 const Authentication = require('../../middleware/auth');
-const table = 'skills';
+const table = 'user_skills';
 
 const handler = async (req, res) => {
   try {
     const payload = req.decoded;
 
     if (payload.user.role !== 'candidate') {
-      return res.status(403).json({ error: 'You cannot perform this action:)' });
+      return res.status(403).json({ error: 'You cannot perform this action' });
     }
 
-    const { name } = req.body;
-    const [ skill ] = await knex(table).insert({ name }).returning('*');
+    const { skills } = req.body;
+    const userSkills = skills.map((skill) => ({ skill_id: skill.id, user_id: payload.user.id }));
 
-    res.status(201).json({ ...skill });
+    const createdUserSkills = await knex(table).insert(userSkills).returning('*');
+
+    res.status(201).json(createdUserSkills);
   } catch (error) {
     console.log(error); //eslint-disable-line
     res.status(500).json({ error: 'An error occurred' });
@@ -34,7 +36,7 @@ const validate = (req, res, next) => {
 module.exports = [
   Authentication.auth,
   [
-    body('name').exists().isString(),
+    body('skills').exists().isArray(),
   ],
   validate,
   handler

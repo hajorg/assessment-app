@@ -4,14 +4,13 @@ const knex = require('../../../db_connection');
 const Authentication = require('../../middleware/auth');
 const table = 'users';
 
-
 const handler = async (req, res) => {
   try {
     const { id } = req.params;
 
     const [ user ] = await knex(table).select('*').where({ id });
     if (!user) return res.status(404).send({ error: 'User not found' });
-    const skills = await knex('skills').select('*').where({ candidate_id: id });
+    const skills = await knex('user_skills').select('*').where({ user_id: id }).innerJoin('skills', 'skills.id', 'user_skills.skill_id');
     delete user.password;
     user.skills = skills;
 

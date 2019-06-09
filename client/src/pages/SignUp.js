@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 
-import skills from '../utils/skills';
 import './Form.css';
 
 class SignUp extends Component {
@@ -19,6 +18,7 @@ class SignUp extends Component {
       error: '',
       errors: [],
       skills: [],
+      allSkills: [],
       requestInProgress: false
     };
 
@@ -26,11 +26,15 @@ class SignUp extends Component {
     this.handleSubmit = this.handleSubmit.bind(this);
   }
 
-  componentDidMount() {
+  async componentDidMount() {
     const token = localStorage.getItem('token');
     if (token && token !== 'undefined') {
       return this.props.history.push('/');
     }
+
+    const res = await fetch('/api/v1/skills');
+    const data = await res.json();
+    this.setState({ allSkills: data });
   }
 
   handleChange(e) {
@@ -44,7 +48,7 @@ class SignUp extends Component {
         }
       }
     }
-    
+
     const { name, value } = e.target;
     this.setState(() => ({
       [name]: jobSkills.length ? jobSkills : value
@@ -65,7 +69,10 @@ class SignUp extends Component {
   }
 
   async createUser() {
-    const { first_name, last_name, email, password, bio, location, role, skills } = this.state;
+    const { first_name, last_name, email, password, bio, location, role } = this.state;
+    const mappedSkills = this.state.allSkills.filter((skill) => this.state.skills.includes(skill.name));
+    const skills = mappedSkills.map(skill => ({ id: skill.id }));
+    this.setState({ requestInProgress: true });
     try {
       const res = await fetch('/api/v1/users', {
         method: 'POST',
@@ -74,7 +81,7 @@ class SignUp extends Component {
         },
         body: JSON.stringify({ first_name, last_name, email, password, bio, location, role, skills })
       });
-      this.setState({ requestInProgress: true });
+
       return res.json();
     } catch (error) {
       console.log(error);
@@ -83,7 +90,7 @@ class SignUp extends Component {
 
   render() {
     const roles = this.state.role_options.map((role, i) => <option key={i} value={role}>{role}</option>);
-    const skillOptions = skills.map((item) => (
+    const skillOptions = this.state.allSkills.map((item) => (
       <option key={item.id} value={item.name}>
         {item.name}
       </option>

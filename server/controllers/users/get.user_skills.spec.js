@@ -5,7 +5,7 @@ const app = require('../../app');
 
 const server = supertest(app);
 const url = (id) => `/api/v1/users/${id}/skills`;
-const skills = ['Java', 'Go'];
+const skills = [ { id: 1, name: 'Java' }, { id: 2, name: 'Go' } ];
 const payload = {
   first_name: 'John',
   last_name: 'Doe',
@@ -30,7 +30,7 @@ describe('Get User Skills /ap1/v1/users', () => {
   });
 
   afterEach(async() => {
-    await knex.truncate('skills');
+    await knex.truncate('user_skills');
     await knex.truncate('users');
   });
   afterAll(async () => knex.destroy());
@@ -43,8 +43,8 @@ describe('Get User Skills /ap1/v1/users', () => {
       .expect('Content-Type', /json/);
     
     expect(res.body.length).toBe(skills.length);
-    expect(res.body[0].name).toBe(skills[0]);
-    expect(res.body[1].name).toBe(skills[1]);
+    expect(res.body[0].name).toBe(skills[0].name);
+    expect(res.body[1].name).toBe(skills[1].name);
   });
 
   test('should return empty array if skills are not found', async () => {

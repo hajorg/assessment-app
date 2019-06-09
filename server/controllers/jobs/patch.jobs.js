@@ -5,7 +5,6 @@ const Authentication = require('../../middleware/auth');
 const table = 'jobs';
 const applicantTable = 'job_applications';
 
-
 const handler = async (req, res) => {
   try {
     const { id } = req.params;
@@ -20,6 +19,9 @@ const handler = async (req, res) => {
     if (payload.user.role !== 'client') {
       return res.status(403).json({ error: 'You cannot perform this action:)' });
     }
+
+    const foundApproved = await knex(applicantTable).select('*').where({ job_id: id, accepted: true }).first();
+    if (foundApproved) return res.status(400).json({ error: 'A candidate has already been approved' });
 
     const [ applicantJob ] = await knex(applicantTable).update({
       accepted: true,
@@ -38,8 +40,8 @@ const validate = (req, res, next) => {
   if (!errors.isEmpty()) {
     return res.status(422).json({ errors: errors.array() });
   }
-  next();
 
+  next();
 };
 
 module.exports = [

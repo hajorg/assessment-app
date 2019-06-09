@@ -30,10 +30,10 @@ describe('Login User /ap1/v1/users', () => {
   });
 
   afterEach(async() => {
-    await knex.truncate('skills');
+    await knex.truncate('user_skills');
     await knex.truncate('users');
   });
-  afterAll(async () => knex.destroy());
+  afterAll(() => knex.destroy());
 
   test('Should log in existing user', async () => {
     const res = await server
