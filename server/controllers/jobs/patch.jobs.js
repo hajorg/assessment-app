@@ -20,6 +20,9 @@ const handler = async (req, res) => {
       return res.status(403).json({ error: 'You cannot perform this action:)' });
     }
 
+    const foundApproved = await knex(applicantTable).select('*').where({ job_id: id, accepted: true }).first();
+    if (foundApproved) return res.status(400).json({ error: 'A candidate has already been approved' });
+
     const [ applicantJob ] = await knex(applicantTable).update({
       accepted: true,
     }).where({ applicant_id, job_id: id }).returning('*');

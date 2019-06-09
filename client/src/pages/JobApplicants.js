@@ -7,8 +7,9 @@ class JobApplicants extends Component {
     this.state = {
       jobApplications: [],
       applicants: [],
-      success: false,
-      error: false
+      error: '',
+      errors: [],
+      success: false
     };
 
     this.handleClick = this.handleClick.bind(this);
@@ -62,18 +63,19 @@ class JobApplicants extends Component {
 
       const data = await res.json();
       if (data.error || data.errors) {
-        return this.handleError();
+        return this.handleError(data);
       }
+
       window.scrollTo(0, document.getElementById('alert').offsetTop - 20);
-      this.setState({ success: true, error: false });
+      this.setState({ success: true, error: '', errors: [] });
     } catch (error) {
       console.log(error);
     }
   }
 
-  handleError() {
+  handleError(data) {
     window.scrollTo(0, document.getElementById('alert').offsetTop - 20);
-    this.setState({ error: true });
+    this.setState({ error: data.error || '', errors: data.errors || [], success: false });
     return;
   }
 
