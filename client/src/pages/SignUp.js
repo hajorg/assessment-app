@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import Select from 'react-select';
 
 import './Form.css';
 
@@ -9,7 +10,7 @@ class SignUp extends Component {
     this.state = {
       first_name: '',
       last_name: '',
-      role: 'candidate',
+      role: '',
       email: '',
       password: '',
       bio: '',
@@ -24,6 +25,8 @@ class SignUp extends Component {
 
     this.handleChange = this.handleChange.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
+    this.onChangeRole = this.onChangeRole.bind(this);
+    this.onChangeSkills = this.onChangeSkills.bind(this);
   }
 
   async componentDidMount() {
@@ -69,9 +72,7 @@ class SignUp extends Component {
   }
 
   async createUser() {
-    const { first_name, last_name, email, password, bio, location, role } = this.state;
-    const mappedSkills = this.state.allSkills.filter((skill) => this.state.skills.includes(skill.name));
-    const skills = mappedSkills.map(skill => ({ id: skill.id }));
+    const { first_name, last_name, email, password, bio, location, role, skills } = this.state;
     this.setState({ requestInProgress: true });
     try {
       const res = await fetch('/api/v1/users', {
@@ -88,13 +89,22 @@ class SignUp extends Component {
     }
   }
 
+  onChangeSkills(value) {
+    this.setState({ skills: value })
+  }
+
+  onChangeRole({ value }) {
+    this.setState({ role: value })
+  }
+
   render() {
-    const roles = this.state.role_options.map((role, i) => <option key={i} value={role}>{role}</option>);
-    const skillOptions = this.state.allSkills.map((item) => (
-      <option key={item.id} value={item.name}>
-        {item.name}
-      </option>
-    ));
+    const roles = this.state.role_options.map(role => ({ value: role, label: role }));
+    const skillOptions = this.state.allSkills.map((item) => ({
+      id: item.id,
+      value: item.name,
+      label: item.name,
+      name: item.name
+    }));
     const errors = this.state.errors.map((error, i) =>
       <li className='list-group-item d-flex justify-content-between align-items-center' key={i}>{error.msg}</li>
     );
@@ -147,19 +157,26 @@ class SignUp extends Component {
             <input type='location' name='location' id='location' className='form-control form-control-sm' value={this.state.location} onChange={this.handleChange} />
           </div>
           <div className='form-group'>
-            <label htmlFor='role'>Role</label>
-            <select className='form-control form-control-sm' id='role' name='role' onChange={this.handleChange}>
-              {roles}
-            </select>
+            <Select
+              name='role'
+              options={roles}
+              className='basic-multi-select'
+              classNamePrefix='select'
+              placeholder='Select Role...'
+              onChange={this.onChangeRole}
+            />
           </div>
           <div className='form-group'>
-            <label htmlFor='des'>Skills</label>
-            <input readOnly type='text' name='skills' id='skills' className='form-control form-control-sm' value={this.state.skills} onChange={this.handleChange} />
-          </div>
-          <div className='form-group'>
-            <select multiple className='form-control form-control-sm' onChange={this.handleChange} name='skills'>
-              {skillOptions}
-            </select>
+            <Select
+              isSearchable
+              isMulti
+              name='skills'
+              options={skillOptions}
+              className='basic-multi-select'
+              classNamePrefix='select'
+              placeholder='Select Skills...'
+              onChange={this.onChangeSkills}
+            />
           </div>
           <div className='form-group'>
             <label htmlFor='bio'>Bio</label>

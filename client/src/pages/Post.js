@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import Select from 'react-select';
 
 class Post extends Component {
   constructor(props) {
@@ -16,6 +17,7 @@ class Post extends Component {
 
     this.handleChange = this.handleChange.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
+    this.onChangeSkills = this.onChangeSkills.bind(this);
   }
 
   async componentDidMount() {
@@ -67,9 +69,7 @@ class Post extends Component {
   }
 
   async createJob() {
-    const { title, description, allSkills } = this.state;
-    const mappedSkills = allSkills.filter((skill) => this.state.skills.includes(skill.name));
-    const skills = mappedSkills.map(skill => ({ id: skill.id }));
+    const { title, description, skills } = this.state;
     this.setState({ requestInProgress: true });
 
     try {
@@ -88,12 +88,17 @@ class Post extends Component {
     }
   }
 
+  onChangeSkills(value) {
+    this.setState({ skills: value })
+  }
+
   render() {
-  const skillOptions = this.state.allSkills.map((item) => (
-      <option key={item.id} value={item.name}>
-        {item.name}
-      </option>
-    ));
+    const skillOptions = this.state.allSkills.map((item) => ({
+      id: item.id,
+      value: item.name,
+      label: item.name,
+      name: item.name
+    }));
     const errors = this.state.errors.map((error, i) =>
       <li className='list-group-item d-flex justify-content-between align-items-center' key={i}>{error.msg}</li>
     ); 
@@ -130,13 +135,16 @@ class Post extends Component {
             <input type='text' name='title' id='title' className='form-control form-control-sm' value={this.state.title} onChange={this.handleChange} />
           </div>
           <div className='form-group'>
-            <label htmlFor='des'>Skills</label>
-            <input readOnly type='text' name='skills' id='skills' className='form-control form-control-sm' value={this.state.skills} onChange={this.handleChange} />
-          </div>
-          <div className='form-group'>
-            <select multiple className='form-control form-control-sm' onChange={this.handleChange} name='skills'>
-              {skillOptions}
-            </select>
+            <Select
+              isSearchable
+              isMulti
+              name='skills'
+              options={skillOptions}
+              className='basic-multi-select'
+              classNamePrefix='select'
+              placeholder='Select Skills...'
+              onChange={this.onChangeSkills}
+            />
           </div>
           <div className='form-group'>
             <label htmlFor='description'>Description</label>
